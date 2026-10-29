@@ -4,9 +4,29 @@
 
 无需 USB。手机保持锁定，通过官方镜像连接。输入操作会将镜像窗口带到前台，使用 Mac 工作时可通过 `pause` 暂停手机输入。
 
-需要支持 iPhone 镜像的 Mac 和 iPhone，并完成官方配对与首次连接。编译需要 Xcode 命令行工具和 Python 3。输入需要运行环境已有的辅助功能、发送及监听输入权限；截图需要录屏权限。在「系统设置 → 隐私与安全性」中为运行命令的终端或宿主应用授予所需权限。`doctor` 只检查这些权限，不弹出授权申请。
+需要支持 iPhone 镜像的 Mac 和 iPhone，并完成官方配对与首次连接。输入需要运行环境已有的辅助功能、发送及监听输入权限；截图需要录屏权限。在「系统设置 → 隐私与安全性」中为运行命令的终端或宿主应用授予所需权限。`doctor` 只检查这些权限，不弹出授权申请。
+
+## 一键安装
+
+已安装 Node.js 18 或更新版本（含 npm）时：
+
+```sh
+npm install -g iphctl
+```
+
+```sh
+iphctl --help
+iphctl capabilities
+iphctl doctor
+```
+
+npm 包内含 macOS 15 或更新版本的通用可执行文件，支持 Apple Silicon 和具备 iPhone 镜像能力的 Intel Mac。安装时不需要 Xcode、Python 或额外下载步骤。Node.js 仅负责启动原生 CLI，输入输出和退出码直接传递给调用方。
+
+更新使用同一条安装命令，卸载使用 `npm uninstall -g iphctl`。手机输入与截图仍需上述系统权限。
 
 ## 构建
+
+从源码编译需要 Xcode 命令行工具和 Python 3：
 
 ```sh
 git clone https://github.com/kaerf15/iphctl.git
@@ -22,19 +42,19 @@ make
 ## 看图与动作
 
 ```sh
-./iphctl status
-./iphctl doctor
-./iphctl shot --out /tmp/iphone.png
-./iphctl click 320 700
-./iphctl home
-./iphctl switcher
-./iphctl spotlight
-./iphctl paste '小红书'
-./iphctl key return
-./iphctl swipe left --y 1230 --amount 280
-./iphctl scroll down --x 318 --y 700 --amount 120
-./iphctl connect
-./iphctl open '小红书'
+iphctl status
+iphctl doctor
+iphctl shot --out /tmp/iphone.png
+iphctl click 320 700
+iphctl home
+iphctl switcher
+iphctl spotlight
+iphctl paste '小红书'
+iphctl key return
+iphctl swipe left --y 1230 --amount 280
+iphctl scroll down --x 318 --y 700 --amount 120
+iphctl connect
+iphctl open '小红书'
 ```
 
 示例坐标必须用当前截图重新选取。截图原点在镜像窗口左上角；坐标和 `--amount` 的单位都是截图像素。工具根据实际截图比例转换为屏幕点。`swipe` 返回的 `from` 和 `to` 是屏幕点，并标明 `coordinate_space`。
@@ -62,9 +82,9 @@ make
 ## 与用户操作协调
 
 ```sh
-./iphctl pause     # 暂停后续手机输入，取消正在执行的动作
-./iphctl resume    # 恢复输入
-./iphctl cancel    # 只取消正在执行的动作，不持续暂停
+iphctl pause     # 暂停后续手机输入，取消正在执行的动作
+iphctl resume    # 恢复输入
+iphctl cancel    # 只取消正在执行的动作，不持续暂停
 ```
 
 需要使用 Mac 工作时先 `pause`，完成后 `resume`。暂停期间仍可读取 `status`、`doctor`、`capabilities` 和截图。`status` 返回连接状态、真实前台状态、暂停状态、是否有其他控制进程及权限信息。未知的 Mac 连接界面按 `blocked`/`unknown` 处理，不猜测手机已经连接。
@@ -76,7 +96,7 @@ make
 ## Agent 协议
 
 ```sh
-./iphctl agent <<'EOF'
+iphctl agent <<'EOF'
 {"id":"features","cmd":"capabilities"}
 {"id":"screen","cmd":"shot","out":"/tmp/iphone.png"}
 EOF
@@ -99,6 +119,8 @@ make test
 ```
 
 测试覆盖参数校验、NDJSON 请求恢复、跨进程互斥、暂停与取消、焦点及连接变化、输入中断和释放清理，不需要连接手机或授予输入权限。真实动作效果由调用方看截图验证。
+
+维护者可运行 `make test-package` 构建两个架构、验证签名、打包并在临时目录中安装测试 npm 包。此步骤额外需要 Node.js 和 npm。发布文件在 `.build/iphctl-<版本>.tgz`，可用 `npm publish .build/iphctl-<版本>.tgz --access public` 发布；npm 包只包含启动器、原生二进制、包信息、README 和许可证。
 
 ## 致谢与许可
 

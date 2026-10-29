@@ -1,0 +1,32 @@
+{
+  "name": "iphctl",
+  "version": "0.1.0",
+  "description": "Swift CLI for vision-capable agents to control iPhone Mirroring on macOS.",
+  "license": "MIT",
+  "author": "kaerf15",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaerf15/iphctl.git"
+  },
+  "homepage": "https://github.com/kaerf15/iphctl#readme",
+  "bugs": {
+    "url": "https://github.com/kaerf15/iphctl/issues"
+  },
+  "keywords": ["iphone", "macos", "cli", "swift", "agent", "iphone-mirroring"],
+  "bin": {
+    "iphctl": "bin/iphctl.cjs"
+  },
+  "os": ["darwin"],
+  "cpu": ["arm64", "x64"],
+  "engines": {
+    "node": ">=18"
+  },
+  "files": ["bin/iphctl.cjs", "native/iphctl"],
+  "scripts": {
+    "prepack": "make package"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

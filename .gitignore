@@ -7,3 +7,6 @@ __pycache__/
 /.cursor/
 /Experiments/
 /docs/development-state.md
+/native/
+*.tgz
+node_modules/

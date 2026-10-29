@@ -10,15 +10,21 @@ permissions:
 
 jobs:
   test:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        runner: [macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: Build, verify signature and test
-        run: make
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build, verify signatures and test the npm package
+        run: make test-package
       - name: Verify command and compatibility launcher
         run: |
           ./iphctl --help
