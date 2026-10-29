@@ -1,0 +1,9 @@
+.build/
+__pycache__/
+.DS_Store
+*.pyc
+/iphctl
+/iphone-ct
+/.cursor/
+/Experiments/
+/docs/development-state.md
